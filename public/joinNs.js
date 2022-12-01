@@ -62,7 +62,6 @@ function buildHtml(msg) {
         <div class="message-text">${msg.text}</div>
     </div>
 </li>`;
-
   return newhtml;
 }
 
