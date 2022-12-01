@@ -1,6 +1,10 @@
 
-
-const socket = io('http://localhost:3001')
+const username = prompt('What is your user name ')
+const socket = io('http://localhost:3001',{
+    query :{
+        username 
+    }
+})
 let nsSocket = ''
 // const socket1 = io('http://localhost:3001/wiki')
 // const socket2 = io('http://localhost:3001/mozilla')

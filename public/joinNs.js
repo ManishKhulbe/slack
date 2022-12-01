@@ -1,4 +1,14 @@
 async function joinNs(endPoint) {
+  console.log(nsSocket, "<<><<");
+  if (nsSocket) {
+    //check its actual a socket
+    // console.log(nsSocket ,"<<>111<<")
+    nsSocket.close();
+    //remove event listener before it added again
+    document
+      .querySelector("#user-input")
+      .removeEventListener("submit", formSubmit);
+  }
   nsSocket = await io(`http://localhost:3001${endPoint}`);
 
   nsSocket.on("nsRoomLoad", (nsRooms) => {
@@ -18,30 +28,32 @@ async function joinNs(endPoint) {
     let roomNodes = document.getElementsByClassName("room");
     Array.from(roomNodes).forEach((elem) => {
       elem.addEventListener("click", (e) => {
-        joinRoom(elem.innerText );
+        joinRoom(elem.innerText);
       });
     });
   });
 
   document
     .querySelector(".message-form")
-    .addEventListener("submit", (event) => {
-      event.preventDefault();
-      const newMessage = document.querySelector("#user-message").value;
-      // console.log(newMessage)
-      nsSocket.emit("newMessageToServer", { text: newMessage , endPoint});
-    });
+    .addEventListener("submit", formSubmit);
 
   nsSocket.on("messageToClients", (msg) => {
-    console.log(msg)
+    console.log(msg);
     document.querySelector("#messages").innerHTML += buildHtml(msg);
   });
+
+  function formSubmit(event) {
+    event.preventDefault();
+    const newMessage = document.querySelector("#user-message").value;
+    // console.log(newMessage)
+    nsSocket.emit("newMessageToServer", { text: newMessage, endPoint });
+  }
 }
 
 function buildHtml(msg) {
-    console.log(msg)
-    const convertedTime = new Date(msg.time).toLocaleString();
-      const newhtml = `<li>
+  // console.log(msg)
+  const convertedTime = new Date(msg.time).toLocaleString();
+  const newhtml = `<li>
     <div class="user-image">
        <img src =${msg.avatar} />
     </div>
@@ -51,7 +63,7 @@ function buildHtml(msg) {
     </div>
 </li>`;
 
-return newhtml
+  return newhtml;
 }
 
 // module.exports= joinNs;
